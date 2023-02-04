@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Alert,
   FlatList,
@@ -42,13 +42,22 @@ export default function App() {
     add1Month,
   } = useCalendar(now);
 
-  const { todoList, addTodo, removeTodo, toggleTodo, input, setInput } =
-    useTodoList(selectedDate);
+  const {
+    todoList,
+    addTodo,
+    removeTodo,
+    toggleTodo,
+    input,
+    setInput,
+    resetInput,
+  } = useTodoList(selectedDate);
   const columns = getCalendarColumns(selectedDate);
+
   const onPressLeftArrow = subtract1Month;
   const onPressHeaderDate = showDatePicker;
   const onPressRightArrow = add1Month;
   const onPressDate = setSelectedDate;
+  const flatListRef = useRef(null);
 
   const ListHeaderComponent = () => (
     <View>
@@ -110,9 +119,22 @@ export default function App() {
 
   const onPressPlus = () => {
     addTodo();
+    resetInput();
+    scrollToEnd();
   };
   const onSubmitEditing = () => {
     addTodo();
+    resetInput();
+    scrollToEnd();
+  };
+  const scrollToEnd = () => {
+    setTimeout(() => {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }, 300);
+  };
+
+  const onFocus = () => {
+    scrollToEnd();
   };
 
   useEffect(() => {
@@ -130,6 +152,8 @@ export default function App() {
           <FlatList
             data={todoList}
             keyExtractor={(_, index) => `column=${index}`}
+            ref={flatListRef}
+            style={{ flex: 1 }}
             renderItem={renderItem}
             ListHeaderComponent={ListHeaderComponent}
             contentContainerStyle={{ paddingTop: statusBarHeight + 60 }}
@@ -140,6 +164,7 @@ export default function App() {
             placeholder={`${dayjs(selectedDate).format("M.D")} 에 추가할 투두`}
             onPressPlus={onPressPlus}
             onSubmitEditing={onSubmitEditing}
+            onFocus={onFocus}
           ></AddTodoInput>
         </View>
       </KeyboardAvoidingView>
