@@ -43,13 +43,14 @@ export default function App() {
   } = useCalendar(now);
 
   const {
-    todoList,
+    filterTodoList,
     addTodo,
     removeTodo,
     toggleTodo,
     input,
     setInput,
     resetInput,
+    todoList,
   } = useTodoList(selectedDate);
   const columns = getCalendarColumns(selectedDate);
 
@@ -62,13 +63,13 @@ export default function App() {
   const ListHeaderComponent = () => (
     <View>
       <Calendar
-        // todoList={todoList}
         columns={columns}
         selectedDate={selectedDate}
         onPressLeftArrow={onPressLeftArrow}
         onPressHeaderDate={onPressHeaderDate}
         onPressRightArrow={onPressRightArrow}
         onPressDate={onPressDate}
+        todoList={todoList}
       />
       <Margin height={15}></Margin>
 
@@ -150,7 +151,7 @@ export default function App() {
       >
         <View>
           <FlatList
-            data={todoList}
+            data={filterTodoList}
             keyExtractor={(_, index) => `column=${index}`}
             ref={flatListRef}
             style={{ flex: 1 }}

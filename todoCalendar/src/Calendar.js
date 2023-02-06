@@ -107,6 +107,10 @@ export default ({
     const isCurrnetMonth = dayjs(date).isSame(selectedDate, "month");
     const isSelected = dayjs(date).isSame(selectedDate, "date");
 
+    const hasTodo = todoList.find((todo) =>
+      dayjs(todo.date).isSame(dayjs(date), "date")
+    );
+
     return (
       <Column
         text={dateText}
@@ -114,6 +118,7 @@ export default ({
         opacity={isCurrnetMonth ? 1 : 0.4}
         onPress={onPress}
         isSelected={isSelected}
+        hasTodo={hasTodo}
       ></Column>
     );
   };
